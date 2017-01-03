@@ -11,6 +11,7 @@ Currently the bot has some hard-coded rules and isn't particularly flexible.
 - **JSON**
 - **Mojo::IOLoop**
 - **DBI**
+  - **DBD::SQLite** (by default, but can be changed)
 - **Math::Random::MT**
 
 Various commands have their own dependencies:
