@@ -1,0 +1,19 @@
+{
+  "prefix": "~",
+
+  "discord": {
+    "token": "",
+    "name": "",
+    "url": "https://localhost",
+    "version": 0.0
+  },
+
+  "database":
+  {
+    "db_driver": "SQLite",
+    "db_name": "",
+
+    "tables_dir": "sql/tables/",
+    "tables_sql": ["users.sql", "log_command.sql", "log_mention.sql", "haiku.sql", "fortune.sql"]
+  }
+}

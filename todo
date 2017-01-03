@@ -1,0 +1,73 @@
+db support for games
+catch sigint
+fix connection/disconnection bugs
+git repo
+
+event system -- haiku
+proper switch/flag support
+
+don't add duplicate haikus
+
+review help texts, use a consistent format
+
+make ignoring general/channels optional, allow to ignore multiple channels
+
+commands:
+  db req:
+    guess
+    mastermind
+    roulette -- BrugleBot
+    quote
+    event
+    social stats
+
+  ss related:
+    ap -- still not feasible?
+    extract -- BrugleBot
+    manhours -- BrugleBot
+    ration -- BrugleBot
+    savings -- BrugleBot
+    suit -- BrugleBot
+    status -- BrugleBot
+    uni/team stats -- BrugleBot
+
+  util:
+    infix calc
+    stop/restart
+
+  bits of fun:
+    cat gifs
+
+
+guess tables:
+  need to:
+    know number games played
+    know the number
+    know number of guesses
+    know who won
+    know who lost
+    know when the game started/finished
+
+  game
+    id
+    number
+    guesses (number of)
+    start
+    finish
+
+  game_player
+    game_id
+    player_id
+    guesses
+    win
+
+quote:
+  author
+  author_id
+  when
+  quote
+  submitted_by
+  style
+    plain
+    inline
+    block
