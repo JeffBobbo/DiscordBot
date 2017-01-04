@@ -30,7 +30,8 @@ sub openDB
   my $user = '';
   my $pass = '';
 
-  return ($dh = DBI->connect($dbd, $user, $pass, { RaiseError => 1 })) or die $DBI::errstr;
+  $dh = DBI->connect($dbd, $user, $pass, { RaiseError => 1 }) or die $DBI::errstr;
+  return $dh;
 }
 
 sub closeDB
