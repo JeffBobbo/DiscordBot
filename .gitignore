@@ -3,3 +3,6 @@
 
 # database file
 *.db
+
+# log files
+*.log
