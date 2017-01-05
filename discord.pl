@@ -16,6 +16,8 @@ use BobboBot::Core::module;
 use BobboBot::Core::db;
 use BobboBot::Core::list;
 
+$|++;
+
 our $config = loadConfig('config.json');
 if (!$config->{discord}{token} || length($config->{discord}{token}) == 0)
 {
