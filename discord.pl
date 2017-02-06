@@ -14,6 +14,7 @@ use Data::Dumper;
 
 use BobboBot::Core::module;
 use BobboBot::Core::db;
+use BobboBot::Core::help;
 use BobboBot::Core::list;
 
 $|++;
