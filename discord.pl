@@ -49,7 +49,8 @@ my $discord = Net::Discord->new(
   url       => $config->{discord}{url},
   version   => $config->{discord}{version},
   callbacks => $discord_callbacks,
-  verbose   => 0
+  verbose   => 0,
+  reconnect => 1
 );
 
 BobboBot::Core::module::loadModules();
