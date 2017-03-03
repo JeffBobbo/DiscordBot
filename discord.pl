@@ -45,7 +45,7 @@ my $discord_callbacks =         # Tell Discord what functions to call for event 
   READY          => \&on_ready,
   MESSAGE_CREATE => \&on_message_create
 };
-my %self;   # We'll store some information about ourselves here from the Discord API
+my %self = (last => 0);   # We'll store some information about ourselves here from the Discord API
 
 # Create a new Mojo::Discord object, passing in the token, application name/url/version, and your callback functions as a hashref
 my $discord = Mojo::Discord->new(
@@ -123,8 +123,9 @@ sub on_message_create
 
 
   print Dumper($hash) if ($author->{id} != $self{id});
-  if (substr($msg, 0, 1) eq $config->{prefix})
+  if (substr($msg, 0, 1) eq $config->{prefix} && time() > $self{last}+$config->{rate})
   {
+    $self{last} = time();
     my ($command, $args) = $msg =~ /^$config->{prefix}([^\s]+)\s?(.*)/s;
     $hash->{command} = $command;
     $hash->{argv} = $args;

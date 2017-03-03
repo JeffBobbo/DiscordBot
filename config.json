@@ -1,5 +1,6 @@
 {
   "prefix": "~",
+  "rate": 2,
 
   "discord": {
     "token": "",
