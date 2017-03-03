@@ -7,7 +7,8 @@ use warnings;
 
 use JSON;
 
-use Net::Discord;
+#use Net::Discord;
+use Mojo::Discord;
 use Mojo::IOLoop;
 
 use Data::Dumper;
@@ -19,6 +20,7 @@ use BobboBot::Core::list;
 
 $|++;
 
+print "Loading configuration data\n";
 our $config = loadConfig('config.json');
 if (!$config->{discord}{token} || length($config->{discord}{token}) == 0)
 {
@@ -33,18 +35,20 @@ if (!$config->{database}{db_name} || length($config->{database}{db_name}) == 0)
   die "No db name given, please add it to config.json\n";
 }
 
+
+print "Initialising DB\n";
 BobboBot::Core::db::init();
 
 # Discord vars
 my $discord_callbacks =         # Tell Discord what functions to call for event callbacks. It's not POE, but it works.
 {
-  on_ready          => \&on_ready,
-  on_message_create => \&on_message_create
+  READY          => \&on_ready,
+  MESSAGE_CREATE => \&on_message_create
 };
 my %self;   # We'll store some information about ourselves here from the Discord API
 
-# Create a new Net::Discord object, passing in the token, application name/url/version, and your callback functions as a hashref
-my $discord = Net::Discord->new(
+# Create a new Mojo::Discord object, passing in the token, application name/url/version, and your callback functions as a hashref
+my $discord = Mojo::Discord->new(
   token     => $config->{discord}{token},
   name      => $config->{discord}{name},
   url       => $config->{discord}{url},
@@ -54,10 +58,13 @@ my $discord = Net::Discord->new(
   reconnect => 1
 );
 
+print "Loading modules\n";
 BobboBot::Core::module::loadModules();
 
+print "Connecting\n";
 # Establish the web socket connection and start the listener
 $discord->init();
+#$discord->connect();
 
 # start the idle loop
 Mojo::IOLoop->start unless (Mojo::IOLoop->is_running);
