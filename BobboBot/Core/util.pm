@@ -9,7 +9,7 @@ use strict;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(min max commify logN readableTime);
+our @EXPORT = qw(min max commify logN random readableTime);
 
 use POSIX;
 use Math::Random::MT;
@@ -58,7 +58,7 @@ sub random
   }
 
   my $range = 1 + $max - $min;
-  my $buckets = floor(2**32-1 / $range);
+  my $buckets = floor((2**32-1) / $range);
   my $limit = $buckets * $range;
   # Create equal size buckets all in a row, then fire randomly towards
   # the buckets until you land in one of them. All buckets are equally
