@@ -87,7 +87,7 @@ sub randomf
     $min = 0.0;
   }
 
-  return $min + $mt->rand($max);
+  return $min + $mt->rand($max-$min);
 }
 
 
