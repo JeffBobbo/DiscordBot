@@ -58,26 +58,26 @@ sub run
 
   if (!defined $question || length($question) == 0)
   {
-    return $fails[random(@fails)];
+    return $fails[random(@fails - 1)];
   }
 
   foreach (@badQs)
   {
     if (index(lc($question), $_) != -1)
     {
-      return $neutral[random(@neutral)];
+      return $neutral[random(@neutral - 1)];
     }
   }
   foreach (@goodQs)
   {
     if (index(lc($question), $_) != -1)
     {
-      my @pool = @{$responses[random(@responses)]};
-      return $pool[random(@pool)];
+      my @pool = @{$responses[random(@responses - 1)]};
+      return $pool[random(@pool - 1)];
     }
   }
 
-  return $fails[random(@fails)];
+  return $fails[random(@fails - 1)];
 }
 
 sub help
