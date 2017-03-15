@@ -11,8 +11,9 @@ sub run
 {
   return "Discord-BobboBot. Written by Bobbo.
 
-All commands use switch-style parameters. A list of commands can be obtained with `" . $main::prefix . "list`.
-All commands support a `-h` switch to receive their command specific help text.";
+All commands use switch-style parameters. A list of commands can be obtained with `" . $main::config->{prefix} . "list`.
+All commands with help text (nearly all) support a `-h` switch to print it, e.g.,
+`~haiku -h`";
 }
 
 BobboBot::Core::module::addCommand('help', \&BobboBot::Core::help::run);
