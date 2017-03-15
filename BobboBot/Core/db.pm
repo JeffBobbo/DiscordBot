@@ -155,4 +155,23 @@ sub fortune_random
   return $fortune;
 }
 
+sub tip_random
+{
+  my $statement = $dh->prepare_cached(qq(SELECT `tip` FROM `tip` ORDER BY RANDOM() LIMIT 1));
+
+  my $ret = $statement->execute();
+  my $haiku = $ret >= 0 ? $statement->fetchrow_hashref() : undef;
+  $statement->finish();
+  return $haiku;
+}
+
+sub tip_count
+{
+  my $statement = $dh->prepare_cached(qq(SELECT COUNT(*) FROM `tip`));
+  my $ret = $statement->execute();
+  my $count = $ret >= 0 ? $statement->fetch()->[0] : -1;
+  $statement->finish();
+  return $count;
+}
+
 1;
