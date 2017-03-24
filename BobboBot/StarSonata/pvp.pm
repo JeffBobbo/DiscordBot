@@ -18,7 +18,7 @@ use constant
 
 my %war = (
   'none'      => 0.0,
-  'one-sided' => 0.15,
+  'one-way' => 0.15,
   'mutual'    => 0.30
 );
 
