@@ -25,7 +25,7 @@ sub run
 
   return 'Invalid flag: ' . $flag . '.' if ($flag !~ /^\d+$/);
   return 'Flag must be greater than 0.' if ($flag <= 0);
-  return 'Flag exceeds the highest possible value, `' . $HIGH . '`.' if ($flag >= $HIGH);
+  return 'Flag exceeds the highest possible value, `' . $HIGH . '`.' if ($flag > $HIGH);
 
   my $result = '';
   for (my $i = 0; $i < @MODS; ++$i)
