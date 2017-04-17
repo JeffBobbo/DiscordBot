@@ -100,9 +100,9 @@ Flags:
   -n NUMBER
     The number of items being constructed in the order, maximum of 10,000.
   -p PERCENT%
-    For calculating the time remaining on running builds, should be in range 0..99 followed by a % sign
+    For calculating the time remaining on running builds, should be in range 0..99 followed by a % sign.
   -r
-    A `Rovert Nanobotics Facility` is in use
+    A `Rovert Nanobotics Facility` is in use.
 ```
 END
 }
