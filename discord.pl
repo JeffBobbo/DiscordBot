@@ -143,7 +143,7 @@ sub on_message_create
     }
     elsif (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
     {
-      $discord->start_typing($channel); # this could take some time
+      #$discord->start_typing($channel); # this could take some time
       my $reply = BobboBot::Core::module::execute($command, $hash);
       BobboBot::Core::db::command_use($command, $args, $author, $channel);
       $discord->send_message($channel, $reply) if (defined $reply && length($reply));
