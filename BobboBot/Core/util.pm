@@ -9,7 +9,7 @@ use strict;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(min max commify logN random readableTime);
+our @EXPORT = qw(min max commify decommify logN random readableTime);
 
 use POSIX;
 use Math::Random::MT;
@@ -35,6 +35,12 @@ sub commify
     scalar reverse $int
   );
   return $sign . $commified . $frac;
+}
+sub decommify
+{
+  my $x = shift();
+  $x =~ s/,//g;
+  return $x;
 }
 
 sub logN
