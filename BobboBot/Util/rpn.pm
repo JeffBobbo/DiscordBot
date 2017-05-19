@@ -19,7 +19,7 @@ sub factorial
   my $n = shift();
   my $r = $n;
   my $i = 1;
-  $r *= $i while (++$i < $n);
+  $r *= $i while (++$i < $n || ($r ne 'nan' || $r ne 'inf' || $r ne '-inf'));
   return $r;
 }
 
@@ -75,7 +75,7 @@ my $operators = {
   'log'   => { ops => 1, t => FUNCTION, fn => sub { return log($_[0]) } },
   'log10' => { ops => 1, t => FUNCTION, fn => sub { return log($_[0]) / log(10) } },
   'logN'  => { ops => 2, t => FUNCTION, fn => sub { return log($_[0]) / log($_[1]) } },
-  '!'     => { ops => 1, t => FUNCTION, fn => sub { return factorial($_[0]) } },
+  #'!'     => { ops => 1, t => FUNCTION, fn => sub { return factorial($_[0]) } },
 
   # trig
   'sin'   => { ops => 1, t => TRIG, fn => sub { return sin($_[0]) } },
