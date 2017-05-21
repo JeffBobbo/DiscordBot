@@ -46,7 +46,8 @@ sub run
   {
     foreach my $e (@{$events{$type}})
     {
-      push(@send, $e->{function}($data));
+      my $r = $e->{function}($data);
+      push(@send, $r) if (defined $r);
     }
   }
   elsif ($type eq 'PERIODIC')
@@ -60,6 +61,11 @@ sub run
         $e->{last}= $now;
       }
     }
+  }
+
+  foreach my $s (@send)
+  {
+    $main::discord->send_message($s->{channel}, $s->{message});
   }
 }
 

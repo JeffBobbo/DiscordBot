@@ -19,7 +19,8 @@ sub check
   if ($msg =~ /.*that.*what.*he.*said.*/)
   {
     BobboBot::Core::db::saidit_add($msg, $author->{id}, $channel);
-    $main::discord->send_message($channel, "They've said it a total of " . BobboBot::Core::db::saidit_count() . " times.");
+    return {channel => $channel,
+            message => "They've said it a total of " . BobboBot::Core::db::saidit_count() . " times."};
   }
 }
 

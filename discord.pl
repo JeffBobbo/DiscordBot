@@ -49,7 +49,7 @@ my $discord_callbacks =         # Tell Discord what functions to call for event 
 my %self = (last => 0);   # We'll store some information about ourselves here from the Discord API
 
 # Create a new Mojo::Discord object, passing in the token, application name/url/version, and your callback functions as a hashref
-my $discord = Mojo::Discord->new(
+our $discord = Mojo::Discord->new(
   token     => $config->{discord}{token},
   name      => $config->{discord}{name},
   url       => $config->{discord}{url},
