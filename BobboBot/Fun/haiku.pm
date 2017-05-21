@@ -51,10 +51,12 @@ sub count
 
 sub check
 {
-  my $poem = shift();
-  my $author = shift();
-  my $channel = shift();
+  my $hash = shift();
+  my $poem = $hash->{msg};
+  my $author = $hash->{author};
+  my $channel = $hash->{channel_id};
 
+  print "$poem\n";
 
   # haikus have to be 17 syllables
   return if (syllable($poem) != 17);
@@ -94,6 +96,13 @@ OPTIONS
 END
 }
 
-BobboBot::Core::module::addCommand('haiku', \&BobboBot::Fun::haiku::run);
+if ($INC{'BobboBot/Core/module.pm'})
+{
+  BobboBot::Core::module::addCommand('haiku', \&BobboBot::Fun::haiku::run);
+}
+if ($INC{'BobboBot/Core/event.pm'})
+{
+  BobboBot::Core::event::add('ON_MESSAGE', \&BobboBot::Fun::haiku::check);
+}
 
 1;

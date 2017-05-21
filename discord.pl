@@ -13,10 +13,11 @@ use Mojo::IOLoop;
 
 use Data::Dumper;
 
-use BobboBot::Core::module;
 use BobboBot::Core::db;
+use BobboBot::Core::event;
 use BobboBot::Core::help;
 use BobboBot::Core::list;
+use BobboBot::Core::module;
 
 $|++;
 
@@ -60,6 +61,7 @@ my $discord = Mojo::Discord->new(
 
 print "Loading modules\n";
 BobboBot::Core::module::loadModules();
+BobboBot::Core::event::run('LOAD');
 
 print "Connecting\n";
 # Establish the web socket connection and start the listener
@@ -92,6 +94,8 @@ sub on_ready
 
   print "READY\n";
 
+  BobboBot::Core::event::run('CONNECT');
+
   #$discord->status_update({'game' => ''});
 };
 
@@ -105,7 +109,7 @@ sub on_message_create
 
   # Store a few things from the hash structure
   my $author = $hash->{author};
-  my $msg = $hash->{content};
+  $hash->{msg} = $hash->{content};
   my $channel = $hash->{channel_id};
   my @mentions = @{$hash->{mentions}};
 
@@ -118,39 +122,42 @@ sub on_message_create
     my $username = $mention->{username};
 
     # Replace the mention IDs in the message body with the usernames.
-    $msg =~ s/\<\@$id\>/$username/g;
+    $hash->{msg} =~ s/\<\@$id\>/$username/g;
   }
 
 
   print Dumper($hash) if ($author->{id} != $self{id});
-  if (substr($msg, 0, 1) eq $config->{prefix} && time() > $self{last}+$config->{rate})
+  if (substr($hash->{msg}, 0, 1) eq $config->{prefix})
   {
-    $self{last} = time();
-    my ($command, $args) = $msg =~ /^$config->{prefix}([^\s]+)\s?(.*)/s;
-    $hash->{command} = $command;
-    $hash->{argv} = $args;
+    if (time() > $self{last}+$config->{rate})
+    {
+      $self{last} = time();
+      my ($command, $args) = $hash->{msg} =~ /^$config->{prefix}([^\s]+)\s?(.*)/s;
+      $hash->{command} = $command;
+      $hash->{argv} = $args;
 
-    if ($command eq 'stop')
-    {
-      if ($author->{username} eq 'Bobbo')
+      if ($command eq 'stop')
       {
-        $discord->disconnect("Goodbye cruel world!");
+        if ($author->{username} eq 'Bobbo')
+        {
+          $discord->disconnect("Goodbye cruel world!");
+        }
+        else
+        {
+          $discord->send_message($channel, "Respect mah authoritah!");
+        }
       }
-      else
+      elsif (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
       {
-        $discord->send_message($channel, "Respect mah authoritah!");
+        #$discord->start_typing($channel); # this could take some time
+        my $reply = BobboBot::Core::module::execute($command, $hash);
+        BobboBot::Core::db::command_use($command, $args, $author, $channel);
+        $discord->send_message($channel, $reply) if (defined $reply && length($reply));
       }
-    }
-    elsif (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
-    {
-      #$discord->start_typing($channel); # this could take some time
-      my $reply = BobboBot::Core::module::execute($command, $hash);
-      BobboBot::Core::db::command_use($command, $args, $author, $channel);
-      $discord->send_message($channel, $reply) if (defined $reply && length($reply));
     }
   }
   else
   {
-    BobboBot::Fun::haiku::check($msg, $author, $channel);
+    BobboBot::Core::event::run('ON_MESSAGE', $hash);
   }
 }
