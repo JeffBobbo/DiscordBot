@@ -80,7 +80,7 @@ Options:
 END
 }
 
-if (exists $INC{'module.pm'})
+if (exists $INC{'BobboBot/Core/module.pm'})
 {
   BobboBot::Core::module::addCommand('savings', \&BobboBot::StarSonata::savings::run);
 }
