@@ -15,6 +15,6 @@
     "db_name": "",
 
     "tables_dir": "sql/tables/",
-    "tables_sql": ["users.sql", "log_command.sql", "log_mention.sql", "haiku.sql", "fortune.sql"]
+    "tables_sql": ["users.sql", "log_command.sql", "log_mention.sql", "haiku.sql", "saidit.sql", "fortune.sql"]
   }
 }

@@ -145,6 +145,27 @@ sub haiku_count
   return $count;
 }
 
+sub saidit_add
+{
+  my $msg = shift();
+  my $author = shift();
+  my $channel = shift();
+
+  my $statement = $db->prepare_cached(qq(INSERT INTO `saidit`(`message`,`author`,`channel`)
+VALUES(?, ?, ?)));
+  my $ret = $statement->execute($msg, $author, $channel);
+  $statement->finish();
+}
+
+sub saidit_count
+{
+  my $statement = $db->prepare_cached(qq(SELECT COUNT(*) FROM `saidit`));
+  my $ret = $statement->execute();
+  my $count = $ret >= 0 ? $statement->fetch()->[0] : 0;
+  $statement->finish();
+  return $count;
+}
+
 sub fortune_random
 {
   my $statement = $dh->prepare_cached(qq(SELECT `fortune` FROM `fortune` ORDER BY RANDOM() LIMIT 1));

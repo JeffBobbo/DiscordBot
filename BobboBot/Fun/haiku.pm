@@ -56,8 +56,6 @@ sub check
   my $author = $hash->{author};
   my $channel = $hash->{channel_id};
 
-  print "$poem\n";
-
   # haikus have to be 17 syllables
   return if (syllable($poem) != 17);
 
