@@ -49,8 +49,6 @@ sub run
       my $mult = BobboBot::StarSonata::util::discount($possible) * 100;
       my $cost = ceil($possible * $items * $mult);
       $left -= ceil($cost / 100);
-      my $tot = $possible * $items;
-      my $save = floor($tot - ($cost / 100));
     }
     return 'A stack of ' . commify($quant) . ' items building items requiring ' . commify($items) . ' each will produce ' . commify($produced) . ' items with ' . commify($left) . ' spare.';
   }
