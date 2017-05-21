@@ -16,7 +16,7 @@ sub check
   my $author = $hash->{author};
   my $channel = $hash->{channel_id};
 
-  if ($msg =~ /.*that.*what.*he.*said.*/)
+  if ($msg =~ /.*that.*what.*he.*said.*/i)
   {
     BobboBot::Core::db::saidit_add($msg, $author->{id}, $channel);
     return {channel => $channel,
@@ -27,7 +27,7 @@ sub check
 
 if ($INC{'BobboBot/Core/event.pm'})
 {
-  BobboBot::Core::saidit::add('ON_MESSAGE', \&BobboBot::Fun::saidit::check);
+  BobboBot::Core::event::add('ON_MESSAGE', \&BobboBot::Fun::saidit::check);
 }
 
 1;

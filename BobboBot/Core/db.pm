@@ -151,7 +151,7 @@ sub saidit_add
   my $author = shift();
   my $channel = shift();
 
-  my $statement = $db->prepare_cached(qq(INSERT INTO `saidit`(`message`,`author`,`channel`)
+  my $statement = $dh->prepare_cached(qq(INSERT INTO `saidit`(`message`,`author`,`channel`)
 VALUES(?, ?, ?)));
   my $ret = $statement->execute($msg, $author, $channel);
   $statement->finish();
@@ -159,7 +159,7 @@ VALUES(?, ?, ?)));
 
 sub saidit_count
 {
-  my $statement = $db->prepare_cached(qq(SELECT COUNT(*) FROM `saidit`));
+  my $statement = $dh->prepare_cached(qq(SELECT COUNT(*) FROM `saidit`));
   my $ret = $statement->execute();
   my $count = $ret >= 0 ? $statement->fetch()->[0] : 0;
   $statement->finish();

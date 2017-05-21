@@ -7,6 +7,8 @@ use v5.10;
 use warnings;
 use strict;
 
+use Data::Dumper;
+
 my %events = (
   LOAD => [], # after modules are loaded
   CONNECT => [], # after "READY"
@@ -65,6 +67,12 @@ sub run
 
   foreach my $s (@send)
   {
+    next if (!defined $s);
+    if (ref($s) ne 'HASH')
+    {
+      print Dumper($s);
+      exit();
+    }
     $main::discord->send_message($s->{channel}, $s->{message});
   }
 }
