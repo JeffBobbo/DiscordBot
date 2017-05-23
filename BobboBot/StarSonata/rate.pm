@@ -364,7 +364,7 @@ sub help
 {
   return <<END
 ```
-$main::config->{prefix}rate -r RESOURCE -n NUMBER [[-l EXE] [-e EXTRACTOR]];
+$main::config->{prefix}rate -r RESOURCE -n NUMBER [[-l EXE] [-e EXTRACTOR]]
 Calculates the base extraction rate of a resource for a given Extraction Expert level
 -r RESOURCE
   The resource being extracted, full list of resources can be obtained from `~rate --r-list`

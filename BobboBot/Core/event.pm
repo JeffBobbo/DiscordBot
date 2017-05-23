@@ -70,8 +70,10 @@ sub run
     next if (!defined $s);
     if (ref($s) ne 'HASH')
     {
+      print "Recieved message unable to send:\n";
       print Dumper($s);
-      exit();
+      print "Skipping\n";
+      next;
     }
     $main::discord->send_message($s->{channel}, $s->{message});
   }

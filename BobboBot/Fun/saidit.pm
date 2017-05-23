@@ -16,7 +16,7 @@ sub check
   my $author = $hash->{author};
   my $channel = $hash->{channel_id};
 
-  if ($msg =~ /.*that.*what.*he.*said.*/i)
+  if ($msg =~ /that.*what.*he.*said/i)
   {
     BobboBot::Core::db::saidit_add($msg, $author->{id}, $channel);
     return {channel => $channel,
