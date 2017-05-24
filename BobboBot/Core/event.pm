@@ -48,8 +48,7 @@ sub run
   {
     foreach my $e (@{$events{$type}})
     {
-      my $r = $e->{function}($data);
-      push(@send, $r) if (defined $r);
+      push(@send, $e->{function}($data));
     }
   }
   elsif ($type eq 'PERIODIC')
