@@ -70,7 +70,7 @@ sub run
   if (length($hash->{argv}))
   {
     my $boss = $bosses->{$hash->{argv}};
-    return "Unknown or boss not found: `$boss`. See `$main::config->{prefix}boss` for the list." if (!defined $boss);
+    return "Unknown or boss not found: `$hash->{argv}`. See `$main::config->{prefix}boss` for the list." if (!defined $boss);
 
     my $str = "```\n$hash->{argv}\n  Location: $boss->{galaxy}\n  Dungeon: $boss->{dungeon}\n";
     if ($boss->{splits} && @{$boss->{splits}})
