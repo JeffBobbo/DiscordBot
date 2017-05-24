@@ -69,7 +69,7 @@ sub run
     next if (!defined $s);
     if (ref($s) ne 'HASH')
     {
-      print "Recieved message unable to send:\n";
+      print "Recieved message unable to send while processing a $type event:\n";
       print Dumper($s);
       print "Skipping\n";
       next;
