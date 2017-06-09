@@ -44,20 +44,23 @@ BobboBot::Core::db::init();
 my $discord_callbacks =         # Tell Discord what functions to call for event callbacks. It's not POE, but it works.
 {
   READY          => \&on_ready,
-  MESSAGE_CREATE => \&on_message_create
+  MESSAGE_CREATE => \&on_message_create,
+  ON_FINISH => sub { print "Exiting\n"; exit(); }
 };
 my %self = (last => 0);   # We'll store some information about ourselves here from the Discord API
 
 # Create a new Mojo::Discord object, passing in the token, application name/url/version, and your callback functions as a hashref
+Mojo::IOLoop->recurring(1 => sub { BobboBot::Core::event::run('PERIODIC'); });
 our $discord = Mojo::Discord->new(
   token     => $config->{discord}{token},
   name      => $config->{discord}{name},
   url       => $config->{discord}{url},
   version   => $config->{discord}{version},
   callbacks => $discord_callbacks,
-  verbose   => 0,
-  reconnect => 1
+  verbose   => 1,
+  reconnect => 0
 );
+$discord->{ready} = 0;
 
 print "Loading modules\n";
 BobboBot::Core::module::loadModules();
@@ -70,7 +73,6 @@ $discord->init();
 
 # start the idle loop
 Mojo::IOLoop->start unless (Mojo::IOLoop->is_running);
-
 exit();
 
 
@@ -95,6 +97,7 @@ sub on_ready
   print "READY\n";
 
   BobboBot::Core::event::run('CONNECT');
+  $discord->{ready} = 1;
 
   #$discord->status_update({'game' => ''});
 };

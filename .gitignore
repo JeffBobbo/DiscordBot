@@ -6,3 +6,6 @@
 
 # log files
 *.log
+
+# last, used by the RSS feed poster
+last

@@ -22,6 +22,7 @@ my %events = (
   ON_MESSAGE => [] # when a user sends a message, for commands that run background stuff, e.g., haiku
 );
 
+my @stash;
 sub add
 {
   my $type = shift();
@@ -64,14 +65,27 @@ sub run
     }
   }
 
+  # if we're not ready, stash
+  if ($main::discord->{ready} != 1 && @send)
+  {
+    push(@stash, @send);
+    return;
+  }
+  # if we have a stash, pop it
+  if (@stash)
+  {
+    unshift(@send, @stash);
+    @stash = ();
+  }
+
   foreach my $s (@send)
   {
     next if (!defined $s);
     if (ref($s) ne 'HASH')
     {
       print "Recieved message unable to send while processing a $type event:\n";
+      print "`$s`:\n";
       print Dumper($s);
-      print "Skipping\n";
       next;
     }
     $main::discord->send_message($s->{channel}, $s->{message});

@@ -9,9 +9,6 @@ use strict;
 
 use LWP::Simple;
 use XML::Simple;
-use DateTime::Format::ISO8601;
-
-use Data::Dumper;
 
 my $source = 'http://www.starsonata.com/feeds/all';
 my $postto = '240887860805369856';
@@ -41,24 +38,25 @@ sub check
   {
     if (!defined $last || $entry->{updated} gt $last)
     {
+      print "Entry: $entry->{updated}\nLast:  $last\n";
       push(@todo, $entry);
     }
   }
-  # sort newest first
-  @todo = sort {$b->{updated} cmp $a->{updated}} @todo;
-  if (@todo > $maxposts)
+  if (@todo > 1)
   {
-    @todo = splice(@todo, $maxposts);
+    @todo = sort {$a->{updated} cmp $b->{updated}} @todo;
+    if (@todo > $maxposts)
+    {
+      @todo = splice(@todo, scalar(@todo)-$maxposts);
+    }
   }
 
-  my @posts;
-  while (@todo)
+  my $message = '';
+  foreach my $entry (@todo)
   {
-    # pop off the end to do the oldest post first
-    my $entry = pop(@todo);
     my $post = $entry->{title} . "\n```\n" . $entry->{summary} . "\n```\n" . $entry->{link}{href};
-    push(@posts, {channel => $postto,
-                 message => $post});
+    $message .= "\n\n" if (length($message));
+    $message .= $post;
 
     if (!defined $last || $entry->{updated} gt $last)
     {
@@ -69,7 +67,7 @@ sub check
   open(my $fh, '>', 'last');
   print $fh $last;
   close($fh);
-  return @posts;
+  return {channel => $postto, message => $message};
 }
 
 if ($INC{'BobboBot/Core/event.pm'})
