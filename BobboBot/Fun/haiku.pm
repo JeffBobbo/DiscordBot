@@ -88,8 +88,8 @@ sub help
 ```
 $main::config->{prefix}haiku - Prints a 'random' haiku.
 OPTIONS
-  -h - prints this help text
-  -c - counts the number of haikus known to the bot
+  -c
+    counts the number of haikus known to the bot
 ```
 END
 }
