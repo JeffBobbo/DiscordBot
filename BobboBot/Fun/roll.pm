@@ -34,12 +34,12 @@ sub run
     {
       my $x = random(1, $sides);
       $sum += $x;
-      push(@rolls, $x);
+      push(@rolls, commify($x));
     }
 
     my $ret = "<\@$hash->{author}{id}> rolled " . commify($sum);
     $ret .= " (" . join(', ', @rolls) . ")" if ($n > 1);
-    $ret .= " out of $max.";
+    $ret .= " out of " . commify($max) . ".";
     return $ret;
   }
   return  "Unrecognised rolling style, see `$main::config->{prefix}roll -h`.";
