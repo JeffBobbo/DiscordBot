@@ -61,8 +61,8 @@ our $discord = Mojo::Discord->new(
   url       => $config->{discord}{url},
   version   => $config->{discord}{version},
   callbacks => $discord_callbacks,
-  verbose   => 1,
-  reconnect => 0
+  verbose   => 0,
+  reconnect => 1
 );
 $discord->{ready} = 0;
 
@@ -132,8 +132,10 @@ sub on_message_create
     $hash->{msg} =~ s/\<\@$id\>/$username/g;
   }
 
+  # if we received this in response to myself, don't do anything
+  return if ($author->{id} == $self{id});
 
-  print Dumper($hash) if ($author->{id} != $self{id});
+  #print Dumper($hash);
   if (substr($hash->{msg}, 0, 1) eq $config->{prefix})
   {
     if (time() > $self{last}+$config->{rate})
