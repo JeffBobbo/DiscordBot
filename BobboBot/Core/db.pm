@@ -248,4 +248,49 @@ sub tip_count
   return $count;
 }
 
+sub faq_get
+{
+  my $name = shift();
+
+  my $statement = $dh->prepare_cached(qq(SELECT * FROM `faq` WHERE `name`=?));
+  my $ret = $statement->execute($name);
+  my $faq = $ret >= 0 ? $statement->fetchrow_hashref() : undef;
+  $statement->finish();
+  return $faq;
+}
+
+sub faq_count
+{
+  my $statement = $dh->prepare_cached(qq(SELECT COUNT(*) FROM `faq`));
+  my $ret = $statement->execute();
+  my $count = $ret >= 0 ? $statement->fetch()->[0] : -1;
+  $statement->finish();
+  return $count;
+}
+
+sub faq_add
+{
+  my $name = shift();
+  my $text = shift();
+  my $userid = shift();
+
+  my $statement = $dh->prepare_cached(qq(INSERT INTO `faq`(`name`, `text`, `author`) VALUES(?, ?, ?)));
+  my $ret = $statement->execute($name, $text, $userid);
+  $statement->finish();
+  return $ret >= 0;
+}
+
+sub faq_del
+{
+  my $name = shift();
+
+  my $faq = faq_get($name);
+  return undef if (!defined $faq);
+
+  my $statement = $dh->prepare_cached(qq(DELETE FROM `faq` WHERE `id`=?));
+  my $ret = $statement->execute($faq->{id});
+  $statement->finish();
+  return $ret >= 0 ? $faq : undef;
+}
+
 1;
