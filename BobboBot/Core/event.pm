@@ -81,11 +81,11 @@ sub run
   foreach my $s (@send)
   {
     next if (!defined $s);
-    if (ref($s) ne 'HASH')
+    if (ref($s) ne ref {})
     {
-      print "Recieved message unable to send while processing a $type event:\n";
-      print "`$s`:\n";
-      print Dumper($s);
+      #print "Recieved message unable to send while processing a $type event:\n";
+      #print "`$s`:\n";
+      #print Dumper($s);
       next;
     }
     $main::discord->send_message($s->{channel}, $s->{message});
