@@ -9,13 +9,14 @@ use strict;
 
 use Lingua::EN::Syllable;
 
+use opts::opts;
 use BobboBot::Core::db;
 
 sub run
 {
   my $hash = shift();
-  return help() if (index($hash->{argv}, '-h') != -1);
-  return count() if (index($hash->{argv}, '-c') != -1);
+  return help() if ($hash->{opts}->option_count('h') > 0);
+  return count() if ($hash->{opts}->option_count('c') > 0);
 
   my $h = BobboBot::Core::db::haiku_random();
   return if (!defined $h);
