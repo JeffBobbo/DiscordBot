@@ -66,6 +66,7 @@ sub random
   my $range = 1 + $max - $min;
   my $buckets = floor((2**32-1) / $range);
   my $limit = $buckets * $range;
+  die "Tried to random() with a limit of $limit.\n" if ($limit <= 0);
   # Create equal size buckets all in a row, then fire randomly towards
   # the buckets until you land in one of them. All buckets are equally
   # likely. If you land off the end of the line of buckets, try again.
