@@ -73,6 +73,17 @@ sub user
   $statement->finish();
 }
 
+sub user_access
+{
+  my $userid = shift();
+
+  my $statement = $dh->prepare_cached(qq(SELECT `access` FROM `users` WHERE `id`=?));
+  my $ret = $statement->execute($userid);
+
+  my $a = $ret >= 0 ? $statement->fetch()->[0] : undef;
+  $statement->finish();
+  return $a;
+}
 
 sub command_count
 {
@@ -178,12 +189,54 @@ sub fortune_random
 
 sub tip_random
 {
-  my $statement = $dh->prepare_cached(qq(SELECT `tip` FROM `tip` ORDER BY RANDOM() LIMIT 1));
+  my $statement = $dh->prepare_cached(qq(SELECT * FROM `tip` ORDER BY RANDOM() LIMIT 1));
 
   my $ret = $statement->execute();
   my $haiku = $ret >= 0 ? $statement->fetchrow_hashref() : undef;
   $statement->finish();
   return $haiku;
+}
+
+sub tip_search
+{
+  my $search = shift();
+  my $statement = $dh->prepare_cached(qq(SELECT * FROM ((SELECT * FROM `tip` WHERE `tip` LIKE ? ORDER BY RANDOM()) JOIN (SELECT COUNT(*) AS `count` FROM `tip` WHERE `tip` LIKE ?))));
+  my $ret = $statement->execute('%' . $search . '%', '%' . $search . '%');
+
+  my $data = $ret >= 0 ? $statement->fetchrow_hashref() : undef;
+  $statement->finish();
+  return $data;
+}
+
+sub tip_add
+{
+  my $tip = shift();
+  my $authorid = shift();
+
+  my $statement = $dh->prepare_cached(qq(INSERT INTO `tip`(`tip`, `author`) VALUES(?, ?)));
+
+  my $ret = $statement->execute($tip, $authorid);
+  $statement->finish();
+  if ($ret < 0)
+  {
+    return -1;
+  }
+
+  $statement = $dh->prepare_cached(qq(SELECT `id` FROM `tip` WHERE `tip`=?));
+  $ret = $statement->execute($tip);
+  my $id = $ret >= 0 ? $statement->fetch()->[0] : -1;
+  $statement->finish();
+  return $id;
+}
+
+sub tip_del
+{
+  my $id = shift();
+
+  my $statement = $dh->prepare_cached(qq(DELETE FROM `tip` WHERE `id`=?));
+  my $ret = $statement->execute($id);
+  $statement->finish();
+  return $ret >= 0;
 }
 
 sub tip_count
