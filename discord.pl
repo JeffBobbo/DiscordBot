@@ -13,11 +13,15 @@ use Mojo::IOLoop;
 
 use Data::Dumper;
 
+use opts::opts;
+
 use BobboBot::Core::db;
 use BobboBot::Core::event;
 use BobboBot::Core::help;
 use BobboBot::Core::list;
 use BobboBot::Core::module;
+use BobboBot::Core::permissions;
+use BobboBot::Core::stop;
 
 $|++;
 
@@ -138,24 +142,21 @@ sub on_message_create
       my ($command, $args) = $hash->{msg} =~ /^$config->{prefix}([^\s]+)\s?(.*)/s;
       $hash->{command} = $command;
       $hash->{argv} = $args;
+      $hash->{opts} = opts::opts($args);
 
-      if ($command eq 'stop')
+      if (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
       {
-        if ($author->{username} eq 'Bobbo')
+        if (BobboBot::Core::permissions::access($author->{id}) < BobboBot::Core::permissions::level($command))
         {
-          $discord->disconnect("Goodbye cruel world!");
+          $discord->send_message($channel, "Permission denied.");
         }
         else
         {
-          $discord->send_message($channel, "Respect mah authoritah!");
+          #$discord->start_typing($channel); # this could take some time
+          my $reply = BobboBot::Core::module::execute($command, $hash);
+          BobboBot::Core::db::command_use($command, $args, $author, $channel);
+          $discord->send_message($channel, $reply) if (defined $reply && length($reply));
         }
-      }
-      elsif (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
-      {
-        #$discord->start_typing($channel); # this could take some time
-        my $reply = BobboBot::Core::module::execute($command, $hash);
-        BobboBot::Core::db::command_use($command, $args, $author, $channel);
-        $discord->send_message($channel, $reply) if (defined $reply && length($reply));
       }
     }
   }
