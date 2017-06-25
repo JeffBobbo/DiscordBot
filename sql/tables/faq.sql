@@ -1,0 +1,11 @@
+/*
+  A table of faqs
+ */
+CREATE TABLE IF NOT EXISTS `faq`
+(
+  `id`      INTEGER  PRIMARY KEY AUTOINCREMENT,
+  `name`    VARCHAR(32) NOT NULL UNIQUE,
+  `text`    TEXT NOT NULL,
+  `author`  BIGINT   REFERENCES users(id),
+  `when`    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
