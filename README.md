@@ -7,12 +7,14 @@ Commands are implemented as their own modules, which are loaded via the `modules
 Currently the bot has some hard-coded rules and isn't particularly flexible.
 
 # Dependencies
-- [**Net::Discord**](https://github.com/vsTerminus/Net-Discord)
+- [**Mojo::Discord**](https://github.com/vsTerminus/Mojo-Discord)
 - **JSON**
 - **Mojo::IOLoop**
 - **DBI**
   - **DBD::SQLite** (by default, but can be changed)
 - **Math::Random::MT**
+- **DateTime**
+- **JSON**
 
 Various commands have their own dependencies:
 - urban
@@ -27,3 +29,6 @@ Various commands have their own dependencies:
   - Digest::SHA
   - Digest::CRC
   - MIME::Base64
+- feed
+  - XML::Simple
+  - LWP::Simple
