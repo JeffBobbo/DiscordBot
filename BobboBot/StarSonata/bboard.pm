@@ -49,6 +49,7 @@ sub post
   }
   $topost = '```' . $topost;
 
+  $main::discord->set_topic($postto, "Login message: " . $json->{login});
   if (defined $postid)
   {
     $main::discord->edit_message($postto, $postid, $topost);
