@@ -7,7 +7,6 @@ use warnings;
 
 use JSON;
 
-#use Net::Discord;
 use Mojo::Discord;
 use Mojo::IOLoop;
 
@@ -144,9 +143,14 @@ sub on_message_create
       my ($command, $args) = $hash->{msg} =~ /^$config->{prefix}([^\s]+)\s?(.*)/s;
       $hash->{command} = $command;
       $hash->{argv} = $args;
-      $hash->{opts} = opts::opts($args);
-
-      if (!$author->{bot} && $channel != $self{general}) # ignore bots, ignore the general channel for commands
+      eval {
+        $hash->{opts} = opts::opts($args);
+      };
+      if ($@)
+      {
+        $hash->{opts} = {};
+      }
+      if (!$author->{bot})# && $channel != $self{general}) # ignore bots, ignore the general channel for commands
       {
         if (BobboBot::Core::permissions::access($author->{id}) < BobboBot::Core::permissions::level($command))
         {
