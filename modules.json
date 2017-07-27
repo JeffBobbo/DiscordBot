@@ -1,7 +1,7 @@
 {
   "BobboBot": {
     "Fun":  ["8ball", "cookie", "haiku", "urbandict", "roll", "roman", "saidit"],
-    "Util": ["encode", "rpn", "usage"],
+    "Util": ["calc", "encode", "rpn", "usage"],
     "StarSonata": ["bboard", "boss", "feed", "condense", "faq", "manhours", "mod", "pvp", "rate", "rations", "savings", "time", "tip"]
   }
 }
