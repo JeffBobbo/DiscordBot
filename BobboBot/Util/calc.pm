@@ -49,11 +49,7 @@ sub functions
 {
   my @functions = $interpreter->type(FUNCT);
 
-  my $report = "List of functions:\n";
-  foreach (@functions)
-  {
-    $report .= $interpreter->help($_) . "\n";
-  }
+  my $report = "List of functions:\n`" . join("`, `", @functions) . "`";
   return $report;
 }
 

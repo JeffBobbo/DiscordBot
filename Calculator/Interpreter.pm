@@ -25,6 +25,14 @@ use constant
   FUNCT => 1
 };
 
+use constant
+{
+  S_FUNCT => 0,
+  S_TRIG  => 1,
+  S_POWER => 2,
+  S_LOG   => 3
+};
+
 sub new
 {
   my $class = shift();
@@ -37,13 +45,23 @@ sub new
       name => 'abs(n)',
       desc => 'Returns absolute value of `n`, e.g., `abs(-5) => 5`.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return abs($_[0]) }
+    },
+    sign =>
+    {
+      name => 'sign(n)',
+      desc => 'Returns 1 for `n` >= 0 and -1 otherwise, e.g., `sign(-5) => -1`.',
+      type => FUNCT,
+      stype => S_FUNCT,
+      fn => sub { return $_[0] >= 0.0 ? 1 : -1 }
     },
     sqrt =>
     {
       name => 'sqrt(n)',
       desc => 'Returns the square root of `abs(n)`, e.g., `sqrt(64) => 8`.',
       type => FUNCT,
+      stype => S_POWER,
       fn => sub { return sqrt(abs($_[0])) }
     },
     root =>
@@ -51,7 +69,40 @@ sub new
       name => 'root(x, n)',
       desc => 'Returns the `n`th root of `abs(x)`, e.g., `root(27, 3) => 3`.',
       type => FUNCT,
+      stype => S_POWER,
       fn => sub { return abs($_[0]) ** (1.0 / $_[1]) }
+    },
+    ceil =>
+    {
+      name => 'ceil(n)',
+      desc => 'Returns the lowest integer greater than `n`, e.g., `ceil(22.5) => 23`.',
+      type => FUNCT,
+      stype => S_FUNCT,
+      fn => sub { return ceil($_[0]) }
+    },
+    floor =>
+    {
+      name => 'floor(n)',
+      desc => 'Returns the highest integer less than `n`, e.g., `floor(-32.2) => -33`.',
+      type => FUNCT,
+      stype => S_FUNCT,
+      fn => sub { return floor($_[0]) }
+    },
+    int =>
+    {
+      name => 'int(n)',
+      desc => 'Returns `n` truncated to an integer towards zero, e.g., `int(4.5) => 4`, `int(-2.3) => -2`.',
+      type => FUNCT,
+      stype => S_FUNCT,
+      fn => sub { return int($_[0]) }
+    },
+    random =>
+    {
+      name => 'random()',
+      desc => 'Returns a random floating point value in the range [0.0 .. 1.0].',
+      type => FUNCT,
+      stype => S_FUNCT,
+      fn => sub { return rand() }
     },
 
     # logarithms
@@ -59,24 +110,28 @@ sub new
       name => 'log(n)',
       desc => 'Returns the natural logarithm (base `e`) of `n`, e.g., `log(7.3890561) => 2`. See <http://perldoc.perl.org/functions/log.html>.',
       type => FUNCT,
+      stype => S_LOG,
       fn => sub { return log($_[0]) }
     },
     log2  => {
       name => 'log2(n)',
       desc => 'Returns the logarithm (base 2) of `n`, e.g., `log2(32) => 5`.',
       type => FUNCT,
+      stype => S_LOG,
       fn => sub { return log($_[0]) / log(2) }
     },
     log10 => {
       name => 'log10(n)',
       desc => 'Returns the logarithm (base 10) of `n`, e.g., `log10(1000) => 3`.',
       type => FUNCT,
+      stype => S_LOG,
       fn => sub { return log($_[0]) / log(10) }
     },
     logN  => {
       name => 'logN(n, b)',
       desc => 'Returns the logarithm (base `b`) of `n`, e.g., `logN(64, 4) => 3`.',
       type => FUNCT,
+      stype => S_LOG,
       fn => sub { return log($_[0]) / log($_[1]) }
     },
     exp  =>
@@ -84,6 +139,7 @@ sub new
       name => 'exp(n)',
       desc => 'Returns `e` to the power of `n`, e.g., `exp(1) => e`. See <http://perldoc.perl.org/functions/exp.html>.',
       type => FUNCT,
+      stype => S_LOG,
       fn => sub { return exp($_[0]) }
     },
 
@@ -92,36 +148,42 @@ sub new
       name => 'sin(x)',
       desc => 'Returns the sine of `x` (expressed in radians), e.g., `sin(pi()) => 0`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return sin($_[0]) }
     },
     cos => {
       name => 'cos(x)',
       desc => 'Returns the cosine of `x` (expressed in radians), e.g., `cos(pi()) => 1`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return cos($_[0]) }
     },
     tan => {
       name => 'tan(x)',
       desc => 'Returns the tangent of `x` (expressed in radians), e.g., `tan(pi()) => 0`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return sin($_[0]) / cos($_[0]) }
     },
     asin  => {
       name => 'asin(x)',
       desc => 'Returns the arcsine of `x` in radians, e.g., `asin(0) => pi()`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return atan2($_[0], sqrt(1 - $_[0] * $_[0])) }
     },
     acos  => {
       name => 'acos(x)',
       desc => 'Returns the arccosine of `x` in radians, e.g., `acos(1) => pi()`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return atan2(sqrt(1 - $_[0] * $_[0]), $_[0]) }
     },
     atan2 => {
       name => 'atan2(y, x)',
       desc => 'Returns the arctangent of `y/x` in radians, e.g., `atan2(0, -1) => pi()`.',
       type => FUNCT,
+      stype => S_TRIG,
       fn => sub { return atan2($_[0], $_[1]) }
     },
 
@@ -130,30 +192,35 @@ sub new
       name => 'min(a, b)',
       desc => 'Returns the smaller value of `a` and `b`, e.g., `min(5, -10) => -10`.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return $_[0] < $_[1] ? $_[0] : $_[1] }
     },
     max => {
       name => 'max(a, b)',
       desc => 'Returns the larger value of `a` and `b`, e.g., `max(34, 2) => 34`.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return $_[0] > $_[1] ? $_[0] : $_[1] }
     },
     deg => {
       name => 'deg(x)',
       desc => 'Converts a value, `x`, expressed in radians to degrees, e.g., `deg(pi()) => 90`.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return $_[0] * 180.0 / pi() }
     },
     rad => {
       name => 'rad(x)',
       desc => 'Converts a value, `x`, expressed in degrees to radians, e.g., `rad(360) => pi() * 4`.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return $_[0] * pi() / 180.0 }
     },
     time => {
       name => 'time()',
       desc => 'Returns the number of seconds from 1970-01-01 00:00:00 UTC. See <http://perldoc.perl.org/functions/time.html>.',
       type => FUNCT,
+      stype => S_FUNCT,
       fn => sub { return time() }
     },
 
@@ -375,7 +442,7 @@ sub visitVariable
   my $val = $self->{vtable}{$vname};
   if (!defined($val))
   {
-    $self->error("unknown variable '$vname'.");
+    $self->error($node, "unknown variable '$vname'.");
   }
   else
   {
@@ -393,7 +460,7 @@ sub visitFunction
   my $fn = $self->{ftable}{$fname};
   if (!defined($fn))
   {
-    $self->error("unknown function '$fname'.");
+    $self->error($node, "unknown function '$fname'.");
   }
   else
   {
@@ -438,6 +505,19 @@ sub type
     push(@fns, $_) if ($self->{ftable}{$_}{type} == $type);
   }
 
+  return sort(@fns);
+}
+
+sub stype
+{
+  my $self = shift();
+  my $stype = shift();
+
+  my @fns;
+  foreach (keys(%{$self->{ftable}}))
+  {
+    push(@fns, $_) if ($self->{ftable}{$_}{stype} == $stype);
+  }
   return sort(@fns);
 }
 

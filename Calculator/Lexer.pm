@@ -152,8 +152,9 @@ sub number
   my $self = shift();
 
   my $n = '';
-  if ($self->{char} eq '0' && $self->peek() eq 'x')
+  if ($self->{char} eq '0' && $self->peek() =~ /[xb]|[^.]/)
   {
+    $n = $self->{char} . $self->peek();
     $self->advance();
     $self->advance();
     while (defined($self->{char}) && $self->{char} =~ /[\da-fA-F]/)
@@ -161,7 +162,7 @@ sub number
       $n .= $self->{char};
       $self->advance();
     }
-    return hex($n);
+    return oct($n);
   }
   else
   {
