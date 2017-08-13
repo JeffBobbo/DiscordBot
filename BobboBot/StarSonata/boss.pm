@@ -11,55 +11,55 @@ use POSIX; # floor
 
 my $bosses = {
   'Barbe Noire' => {
-    galaxy => 'Kiernan',
-    dungeon => '',
-    splits => ['9.12A', '5.12B']
+    galaxy => 'Tyro',
+    dungeon => '8.6',
+    splits => ['2.6B']
   },
   'Black Bart' => {
-    galaxy => 'Gratification',
-    dungeon => '10.9',
-    splits => ['3.9B']
+    galaxy => 'Seagull',
+    dungeon => '8.76',
+    splits => ['2.76B']
   },
   'Cardinal Bellarmine from Hell' => {
-    galaxy => 'Tarazet',
-    dungeon => '10.69',
+    galaxy => 'Torcularis Septentrionalis',
+    dungeon => '4.21',
     splits => []
   },
   'Captain Albatross' => {
-    galaxy => 'Mexico Way',
-    dungeon => '11.17',
-    splits => ['7.17B', '2.17B']
+    galaxy => 'Parthibb',
+    dungeon => '10.30',
+    splits => ['3.30B']
   },
   'Dark Curse' => {
-    galaxy => 'Parmenides',
-    dungeon => '11.18',
-    splits => ['5.18B']
+    galaxy => 'Verdi',
+    dungeon => '10.2',
+    splits => ['3.2B']
   },
-  'George Ohm' => {
-    galaxy => 'Crunchy Catapillar',
-    dungeon => '',
+#  'George Ohm' => {
+#    galaxy => '',
+#    dungeon => '',
+#    splits => []
+#  },
+#  'James Watt' => {
+#    galaxy => '',
+#    dungeon => '',
+#    splits => []
+#  },
+  'Marco Columbus' => {
+    galaxy => 'Verdi',
+    dungeon => '10.2',
+    splits => ['2.2A']
+  }
+  'Nathaniel Courthope' => {
+    galaxy => 'Komna',
+    dungeon => '6.34',
     splits => []
   },
-  'James Watt' => {
-    galaxy => 'Lidius',
-    dungeon => '12.323',
-    splits => ['8.323A', '2.323A']
-  },
-  'Nathaniel Courthope' => {
-    galaxy => 'Kiernan',
-    dungeon => '',
-    splits => ['9.12B', '2.12B']
-  },
   'Sputty Nutty' => {
-    galaxy => 'Gratification',
-    dungeon => '10.9',
-    splits => ['3.9A']
+    galaxy => 'Seagull',
+    dungeon => '8.76',
+    splits => ['4.76A']
   },
-  'Marco Columbus' => {
-    galaxy => 'Mexico Way',
-    dungeon => '',
-    splits => ['11.17A', '2.17A']
-  }
 };
 
 sub run
