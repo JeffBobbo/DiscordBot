@@ -12,7 +12,7 @@ use Data::Dumper;
 
 use constant {
   EXE_BONUS => 0.22,
-  BASE_INTERVAL => 0.1
+  BASE_INTERVAL => 10
 };
 
 my %resources = (
