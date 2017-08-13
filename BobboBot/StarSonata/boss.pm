@@ -49,7 +49,7 @@ my $bosses = {
     galaxy => 'Verdi',
     dungeon => '10.2',
     splits => ['2.2A']
-  }
+  },
   'Nathaniel Courthope' => {
     galaxy => 'Komna',
     dungeon => '6.34',
@@ -59,7 +59,7 @@ my $bosses = {
     galaxy => 'Seagull',
     dungeon => '8.76',
     splits => ['4.76A']
-  },
+  }
 };
 
 sub run
