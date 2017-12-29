@@ -92,6 +92,7 @@ sub run
   # check and guess the type
   if ($value =~ /^\d+$/) # arabic to roman
   {
+    return "VALUE must be less than 4000." if ($value > 4000);
     return roman($value);
   }
   elsif ($value =~ /^N|[IVXLCDM]+$/) # roman to arabic
