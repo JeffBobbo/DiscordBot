@@ -149,6 +149,10 @@ sub readableTime
     }
     $result .= "$val second" . ($val > 1 ? "s" : "");
   }
+  if (length($result) == 0)
+  {
+    $result = "0 seconds";
+  }
   return $result;
 }
 
