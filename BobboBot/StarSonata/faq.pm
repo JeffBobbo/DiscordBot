@@ -31,7 +31,7 @@ sub run
       my $success = BobboBot::Core::db::faq_add($name, $text, $hash->{author}{id});
       if ($success)
       {
-        return "Added $name to the list of FAQs";
+        return "Added `$name` to the list of FAQs";
       }
       return "Failed to add $name to the list of FAQs.";
     }
