@@ -51,7 +51,7 @@ sub run
   my $ret = "$def->{word}:\n```\n$def->{definition}```";
   $ret .= "+$def->{thumbs_up}/-$def->{thumbs_down}\n";
   $ret .= "Submitted by: $def->{author}\n";
-  $ret .= "$def->{permalink}";
+  $ret .= "<$def->{permalink}>";
 
   return $ret;
 }
