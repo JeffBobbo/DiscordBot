@@ -19,7 +19,8 @@ sub discount
 
 sub servertime
 {
-  my $dt = DateTime->now(time_zone => 'America/New_York');
+  my $t = shift();
+  my $dt = DateTime->from_epoch(epoch => $t, time_zone => 'America/New_York');
   return $dt->datetime(' ') . ' ' . ($dt->is_dst() ? 'EDT' : 'EST');
 }
 

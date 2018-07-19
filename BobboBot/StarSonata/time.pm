@@ -14,7 +14,7 @@ sub run
   my $hash = shift();
   return help() if (index($hash->{argv}, '-h') != -1);
 
-  return "Server time is " . BobboBot::StarSonata::util::servertime();
+  return "Server time is " . BobboBot::StarSonata::util::servertime(time());
 }
 
 sub help
