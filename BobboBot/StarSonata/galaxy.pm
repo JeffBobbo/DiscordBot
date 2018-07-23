@@ -72,13 +72,13 @@ sub sector
 
   my $PI = atan2(0, -1);
   return "west" if ($a > $PI / 8 * 7);
-  return "north west" if ($a > $PI / 8 * 5);
-  return "north" if ($a > $PI / 8 * 3);
-  return "north east" if ($a > $PI / 8);
+  return "south west" if ($a > $PI / 8 * 5);
+  return "south" if ($a > $PI / 8 * 3);
+  return "south east" if ($a > $PI / 8);
   return "east" if ($a > -$PI / 8);
-  return "south east" if ($a > -$PI / 8 * 3);
-  return "south" if ($a > -$PI / 8 * 5);
-  return "south west" if ($a > $PI / 8 * 7);
+  return "north east" if ($a > -$PI / 8 * 3);
+  return "north" if ($a > -$PI / 8 * 5);
+  return "north west" if ($a > $PI / 8 * 7);
   return "west";
 }
 
