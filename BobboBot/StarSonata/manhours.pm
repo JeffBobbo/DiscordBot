@@ -11,18 +11,21 @@ use BobboBot::Core::util;
 use BobboBot::StarSonata::util;
 use POSIX;
 
+use opts::opts;
+
 sub run
 {
   my $hash = shift();
   my $argv = $hash->{argv};
-  return help() if (index($argv, '-h') != -1);
+  my $opts = $hash->{opts};
+  return help() if ($opts->has('h'));
 
-  my ($manhours) = $argv =~ /-m ?(\d+)/;
-  my ($workers) = $argv =~ /-w ?(\d+)/;
-  my ($num) = $argv =~ /-n ?(\d+)/;
-  my ($perc) = $argv =~ /-p ?(\d+)%/;
-  my ($roverts) = $argv =~ /-r/;
-  my ($unique) = $argv =~ /-u/;
+  my $manhours = $opts->argument_next();
+  my $workers = $opts->argument_next() || 1;
+  my $num = $opts->option_next('n');
+  my $perc = $opts->option_next('p');
+  my $roverts = $opts->has('r');
+  my $unique = $opts->has('u');
 
   if (!defined $manhours)
   {
@@ -33,10 +36,6 @@ sub run
     return "A build with no manhours is no build at all.";
   }
 
-  if (!defined $workers)
-  {
-    $workers = 1;
-  }
   if ($workers < 1)
   {
     return "Things don't build themselves.";
@@ -81,8 +80,11 @@ sub run
   {
     $result .= " from " . $perc . "%";
   }
+  if ($roverts)
+  {
+    $result .= " when boosted with a Rovert Nanobotics Facility";
+  }
   $result .= ".";
-
 
   return $result;
 }
@@ -90,19 +92,24 @@ sub run
 sub help
 {
   return <<END
-```$main::config->{prefix}manhours -m MANHOURS [-w WORKERS] [-n NUMBER] [-p PERCENT%] [-r] - Calculate item build time
+```$main::config->{prefix}manhours MANHOURS [WORKERS] [-n NUMBER] [-p PERCENT%] [-r] [-u] - Calculate item build time
+
+Arguments:
+  MANHOURS
+    Number of manhours the blueprint requires.
+  WORKERS
+    Number of workers available to work on the construction (or the max workforce).
+    Defaults to 1.
 
 Flags:
-  -m MANHOURS
-    Number of manhours the blueprint requires.
-  -w WORKERS
-    The total number of workers available to build the construction.
   -n NUMBER
     The number of items being constructed in the order, maximum of 10,000.
   -p PERCENT%
     For calculating the time remaining on running builds, should be in range 0..99 followed by a % sign.
   -r
     A `Rovert Nanobotics Facility` is in use.
+  -u
+    A "unique" build, where items are built one by one, instead of in one batch.
 ```
 END
 }
