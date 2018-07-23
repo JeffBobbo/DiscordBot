@@ -75,6 +75,15 @@ sub option_count
   return $count;
 }
 
+sub has
+{
+  return shift()->option_count(shift()) > 0;
+}
+
+# returns the next option of the required one given
+# can be used repetatively to get all values for a specific option
+# can be used to just pull each value as needed
+# changing flag resets the state, so options must be done in batches
 sub option_next
 {
   my $self = shift();

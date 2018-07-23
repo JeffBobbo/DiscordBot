@@ -19,6 +19,5 @@ All commands with help text (nearly all) support a `-h` switch to print it, e.g.
 }
 
 BobboBot::Core::module::addCommand('list', \&BobboBot::Core::list::run);
-BobboBot::Core::module::addCommand('help', \&BobboBot::Core::list::run);
 
 1;

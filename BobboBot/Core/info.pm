@@ -9,7 +9,7 @@ use strict;
 
 sub run
 {
-  return "Discord-BobboBot. Written by Bobbo. Source avalable from <https://github.com/JeffBobbo/DiscordBot>";
+  return "BobboBot. Written by Bobbo. Source avalable from <https://github.com/JeffBobbo/DiscordBot>";
 }
 
 BobboBot::Core::module::addCommand('info', \&BobboBot::Core::info::run);

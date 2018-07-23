@@ -16,6 +16,7 @@ use opts::opts;
 
 use BobboBot::Core::db;
 use BobboBot::Core::event;
+use BobboBot::Core::help;
 use BobboBot::Core::info;
 use BobboBot::Core::list;
 use BobboBot::Core::module;
