@@ -104,7 +104,7 @@ sub run
   {
     foreach my $g (values(%{$universe->{galaxies}}))
     {
-      if (index($g->{name}, $hash->{argv}) != -1)
+      if ((!defined $g->{mapable} || $g->{mapable} == 1) && index($g->{name}, $hash->{argv}) != -1)
       {
         push(@matches, $g->{name});
       }
