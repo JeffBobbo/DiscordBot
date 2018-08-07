@@ -163,7 +163,7 @@ sub on_message_create
           #$discord->start_typing($channel); # this could take some time
           my $reply = BobboBot::Core::module::execute($command, $hash);
           BobboBot::Core::db::command_use($command, $args, $author, $channel);
-          $discord->send_message($channel, $reply) if (defined $reply && length($reply));
+          $discord->send_message($channel, $reply) if (defined $reply);# && length($reply));
         }
       }
     }
