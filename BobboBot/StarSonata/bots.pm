@@ -37,17 +37,14 @@ sub wild
 sub run
 {
   my $hash = shift();
+  my $opts = $hash->{opts};
 
-  my $argv = $hash->{argv};
-  return help() if (!defined $argv || index($argv, '-h') != -1);
+  return help() if ($opts->has('h'));
 
-  my ($rc) = $argv =~ /-l ?(\d+)/;
-  my ($br) = $argv =~ /-r ?(\d+)/;
-  #my ($isTrade) = $argv =~ /-t/;
-  #my ($isCombat) = $argv =~ /-c/;
-  #my ($isWild) = $argv =~ /-w/;
-  my ($phd) = $argv =~ /-p/;
-  my ($wm) = $argv =~ /-w/;
+  my $rc = $opts->argument_next();
+  my $br = $opts->option_next('r');
+  my $phd = $opts->has('p');
+  my $wm = $opts->has('w');
 
   return "No Remote Control level" if (!defined $rc);
 
@@ -57,11 +54,16 @@ sub run
 sub help
 {
   return <<END
-```$main::config->{prefix}bots -l <rc> -r <br> [-p] [-w] - Calculates the number of trade, combat, and wild bot slots you have
-  -l <rc> - Your level in Remote Control
-  -r <br> - Your level in Bot Research
-  -p - Bot Ph.D, specify this if you trained it
-  -w - Wild Man, specify this if you have trained it
+```$main::config->{prefix}bots RC [-r BR] [-p] [-w] - Calculates the number of trade, combat, and wild bot slots you have
+
+Arguments
+  RC
+    Your level in Remote Control.
+
+Options
+  -r BR - Your level in Bot Research.
+  -p - Bot Ph.D, specify this if you trained it.
+  -w - Wild Man, specify this if you have trained it.
 ```
 END
 }
