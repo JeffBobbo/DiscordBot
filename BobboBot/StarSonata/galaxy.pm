@@ -8,107 +8,27 @@ use warnings;
 use strict;
 
 use POSIX;
-use LWP::Simple;
-use JSON;
+use URI::Encode qw(uri_encode);
 
-use BobboBot::StarSonata::util;
-
-my $universe;
-my $teams;
-
-sub update
-{
-  my $uni = get('https://jbobbo.net/ss/galaxies.json');
-  if (defined $uni)
-  {
-    $universe = decode_json($uni);
-  }
-
-  my $uts = get('https://jbobbo.net/ss/teams.json');
-  if (defined $uts)
-  {
-    $teams = decode_json($uts);
-  }
-  return undef;
-}
-
-sub layerName
-{
-  my $id = shift();
-
-  return "Earthforce" if ($id == 0);
-  return "Wild Space" if ($id == 3);
-  return "Perilous Space" if ($id == 4);
-  return "Subspace" if ($id == 5);
-  return "Kalthi Depths" if ($id == 6);
-  return "The Nexus" if ($id == 10);
-  return "Color Empires" if ($id == 11);
-  return "The Serengeti" if ($id == 12);
-  return "Nihilite" if ($id == 13);
-  return "Absolution" if ($id == 15);
-  return "Enigmatic Sector" if ($id == 16);
-  return "Iq' Bana" if ($id == 17);
-  return "Olympus" if ($id == 18);
-  return "Liberty" if ($id == 19);
-  return "Subspace instances" if ($id == 20);
-  return "Arctia" if ($id == 21);
-  return "Vulcan" if ($id == 22);
-  return "Suqq' Bana" if ($id == 23);
-  return "Jungle" if ($id == 24);
-  return "Captain Kidd" if ($id == 35);
-  return "Holiday" if ($id == 36);
-
-  return "Unknown layer";
-}
-
-sub sector
-{
-  my $g = shift();
-
-  my $a = atan2($g->{y}, $g->{x});
-  my $d = ($g->{x} ** 2.0 + $g->{y} ** 2.0) ** 0.5;
-
-  return "central" if ($d < 0.75);
-
-  my $PI = atan2(0, -1);
-  return "west" if ($a > $PI / 8 * 7);
-  return "south west" if ($a > $PI / 8 * 5);
-  return "south" if ($a > $PI / 8 * 3);
-  return "south east" if ($a > $PI / 8);
-  return "east" if ($a > -$PI / 8);
-  return "north east" if ($a > -$PI / 8 * 3);
-  return "north" if ($a > -$PI / 8 * 5);
-  return "north west" if ($a > $PI / 8 * 7);
-  return "west";
-}
-
-sub getTeam
-{
-  my $g = shift();
-
-  return $g->{owningTeam} if ($g->{owningTeam});
-
-  return undef if (!$g->{owningTeamID});
-  return $teams->{teams}{$g->{owningTeamID}}{name};
-}
-
+use BobboBot::StarSonata::gamedata;
 
 sub run
 {
   my $hash = shift();
   return help() if (index($hash->{argv}, '-h') != -1);
 
+  my $search = lc($hash->{argv});
   my @matches;
   my $t;
   if (length($hash->{argv}))
   {
-    foreach my $g (values(%{$universe->{galaxies}}))
+    foreach my $g (values(%{universe()->{galaxies}}))
     {
-      if ((!defined $g->{mapable} || $g->{mapable} == 1) && index($g->{name}, $hash->{argv}) != -1)
+      if ((!defined $g->{mapable} || $g->{mapable} == 1) && index(lc($g->{name}), $search) != -1)
       {
         push(@matches, $g->{name});
       }
-      $t = $g if ($g->{name} eq $hash->{argv});
+      $t = $g if (lc($g->{name}) eq $search);
     }
     return "No galaxies found" if (!@matches);
 
@@ -138,24 +58,40 @@ sub run
     my $user = $t->{userbases} || 0;
     foreach my $gid (@{$t->{links}})
     {
-      my $link = $universe->{galaxies}{$gid};
+      my $link = universe()->{galaxies}{$gid};
       ++$dgCount if (index($link->{name}, "DG") != -1);
       ++$jux if (index($link->{name}, "Juxtaposition") != -1);
       ++$con if (index($link->{name}, "Concourse") != -1);
       ++$sub if (index($link->{name}, "Subspace") != -1);
     }
-    my $str = "$t->{name} in " . sector($t) . " $lName at DF$df.\n";
-    $str .= ($t->{protected} ? "Protected by " : "Owned by ") . $team . "\n" if ($team);
-    $str .= "Stations:\n" if ($ai > 0 || $user > 0);
-    $str .= "  AI: $ai\n" if ($ai > 0);
-    $str .= "  User: $user\n" if ($user > 0);
-    $str .= scalar(@{$t->{links}}) . " wormholes\n";
-    $str .= "  $dgCount DGs\n" if ($dgCount > 0);
-    $str .= "  $jux Juxtaposition shortcuts\n" if ($jux > 0);
-    $str .= "  $con Concourse shortcuts\n" if ($con > 0);
-    $str .= "  $sub Subspace shortcuts\n" if ($sub > 0);
-    $str .= "Last updated: " . BobboBot::StarSonata::util::servertime($t->{lastUpdate}) . "\n";
-    return $str;
+
+    my $embed = {
+      title => $t->{name},
+      type => 'rich',
+      description => sector($t) . " $lName, DF $df",
+      url => "https://www.starsonata.com/map/index.html?target=" . uri_encode($t->{name}),
+      color => galColour($t),
+      #timestamp => BobboBot::StarSonata::util::iso8601($t->{lastUpdate}),
+      footer => {text => "Last updated: " . BobboBot::StarSonata::util::servertime($t->{lastUpdate})}
+    };
+    $embed->{thumbnail} = {url => "https://www.starsonata.com/images/team_flags/game/" . $t->{owningTeamID}, width => 20, height => 14} if ($t->{owningTeamID});
+    my @fields;
+    push(@fields, {name => "Ownership", value => $team, inline => \1}) if ($team);
+    push(@fields, {name => "Protected", value => $t->{protected} ? "Yes" : "No", inline => \1}) if ($team);
+
+    push(@fields, {name => "Stations", value => $ai + $user, inline => \0}) if ($ai > 0 || $user > 0);
+    push(@fields, {name => "AI", value => $ai, inline => \1}) if ($ai > 0);
+    push(@fields, {name => "User", value => $user, inline => \1}) if ($user > 0);
+
+    push(@fields, {name => "Wormholes", value => scalar(@{$t->{links}}), inline => \0});
+    push(@fields, {name => "Dungeons", value => $dgCount, inline => \1}) if ($dgCount > 0);
+    push(@fields, {name => "Juxtapositions", value => $jux, inline => \1}) if ($jux > 0);
+    push(@fields, {name => "Concourses", value => $con, inline => \1}) if ($con > 0);
+    push(@fields, {name => "Subspace", value => $sub, inline => \1}) if ($sub > 0);
+
+    $embed->{fields} = \@fields;
+
+    return {content => '', embed => $embed};
   }
   return "No galaxy name provided";
 }
@@ -172,7 +108,6 @@ END
 if ($INC{'BobboBot/Core/module.pm'})
 {
   BobboBot::Core::module::addCommand('galaxy', \&BobboBot::StarSonata::galaxy::run);
-  BobboBot::Core::event::add('PERIODIC', \&BobboBot::StarSonata::galaxy::update, 600);
 }
 
 1;
