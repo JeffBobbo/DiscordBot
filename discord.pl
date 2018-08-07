@@ -62,6 +62,7 @@ our $discord = Mojo::Discord->new(
   version   => $config->{discord}{version},
   callbacks => $discord_callbacks,
   verbose   => 0,
+  timeout   => 25,
   reconnect => 1
 );
 $discord->{ready} = 0;
