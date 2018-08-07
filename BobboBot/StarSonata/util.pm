@@ -24,4 +24,11 @@ sub servertime
   return $dt->datetime(' ') . ' ' . ($dt->is_dst() ? 'EDT' : 'EST');
 }
 
+sub iso8601
+{
+  my $t = shift();
+  my $dt = DateTime->from_epoch(epoch => $t, time_zone => 'America/New_York');
+  return $dt->iso8601() . '-' . ($dt->is_dst() ? '04:00' : '05:00');
+}
+
 1;
